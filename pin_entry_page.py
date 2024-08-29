@@ -13,10 +13,10 @@ class PinEntryPage(tk.Frame):
         # Load the background image
         background_image = Image.open("backboard.png")
         background_image = background_image.resize((1024, 600))
-        background_photo = ImageTk.PhotoImage(background_image)
+        self.background_photo = ImageTk.PhotoImage(background_image)
         
         # Create a background image on the canvas
-        self.canvas.create_image(0, 0, image=background_photo, anchor="nw")  
+        self.canvas.create_image(0, 0, image=self.background_photo, anchor="nw")  
         
         # create_canvas_button(canvas, 100 + j * 100, 450 + i * 100, str(num), lambda e, num=num: print(f"Button {num} clicked"))
         

@@ -7,8 +7,8 @@ class PinEntryPage(tk.Frame):
         super().__init__(master)
         self.master = master
         
-        canvas = tk.Canvas(self, width=1024, height=600, bg="black")
-        canvas.pack()
+        self.canvas = tk.Canvas(self, width=1024, height=600, bg="black")
+        self.canvas.pack()
         
         # Load the background image
         background_image = Image.open("backboard.png")
@@ -16,7 +16,7 @@ class PinEntryPage(tk.Frame):
         background_photo = ImageTk.PhotoImage(background_image)
         
         # Create a background image on the canvas
-        canvas.create_image(0, 0, image=background_photo, anchor="nw")  
+        self.canvas.create_image(0, 0, image=background_photo, anchor="nw")  
         
         # create_canvas_button(canvas, 100 + j * 100, 450 + i * 100, str(num), lambda e, num=num: print(f"Button {num} clicked"))
         
@@ -33,37 +33,37 @@ class PinEntryPage(tk.Frame):
             for j in range(3):
                 _start_x = start_x + (j * 130)
                 num = i * 3 + j + 1
-                self.create_canvas_button(canvas, _start_x, _start_y, str(num), lambda e, num=num: self.hit_keypad_number(num, canvas))
+                self.create_canvas_button(_start_x, _start_y, str(num), lambda e, num=num: self.hit_keypad_number(num))
                 
-        self.create_canvas_button(canvas, start_x, 422, str("X"), lambda e, num="X": self.remove_number_pin(canvas), rect_fill="#330C0C", text_fill="#C22D2D")
-        self.create_canvas_button(canvas, start_x+130, 422, str(0), lambda e, num=0: self.hit_keypad_number(num, canvas))
-        self.create_canvas_button(canvas, start_x+260, 422, str("Y"), lambda e, num="Y": self.validate_pin(canvas), rect_fill="#1B3322", text_fill="#68C281")
+        self.create_canvas_button(start_x, 422, str("X"), lambda e, num="X": self.remove_number_pin(), rect_fill="#330C0C", text_fill="#C22D2D")
+        self.create_canvas_button(start_x+130, 422, str(0), lambda e, num=0: self.hit_keypad_number(num))
+        self.create_canvas_button(start_x+260, 422, str("Y"), lambda e, num="Y": self.validate_pin(), rect_fill="#1B3322", text_fill="#68C281")
                         
-        self.update_pin_ui(canvas=canvas)
+        self.update_pin_ui()
         
-    def validate_pin(self, canvas):
+    def validate_pin(self):
         self.master.show_screen(FinalPage)
     
-    def remove_number_pin(self, canvas):
+    def remove_number_pin(self):
         if len(self.pin_string) > 0:
             self.pin_string = self.pin_string[:-1]
-            self.update_pin_ui(canvas)
+            self.update_pin_ui()
         
-    def hit_keypad_number(self, number, canvas):
+    def hit_keypad_number(self, number):
         if len(self.pin_string) < 6:
             print(f"Button {number} clicked")
             self.pin_string += str(number)
-            self.update_pin_ui(canvas=canvas)
+            self.update_pin_ui()
         else:
             print(f"Button {number} ignored")
             pass
         
-    def update_pin_ui(self, canvas):
+    def update_pin_ui(self):
         
         for text_id in self.pin_numbers:
-            canvas.delete(text_id)
+            self.canvas.delete(text_id)
         for text_id in self.pin_circles:
-            canvas.delete(text_id)
+            self.canvas.delete(text_id)
             
         self.pin_circles = []
         start_x = 347+15
@@ -73,16 +73,16 @@ class PinEntryPage(tk.Frame):
             if i < len(self.pin_string):
                 pass
             else:
-                self.pin_circles.append(self.create_pin_circle(canvas, _start_x, start_y))
+                self.pin_circles.append(self.create_pin_circle(_start_x, start_y))
             
         self.pin_numbers = []
         start_x = 347+15
         start_y = 127+15
         for i in range(len(self.pin_string)):
             _start_x = start_x + (i * (36+24))
-            self.pin_numbers.append(canvas.create_text(_start_x, start_y, text=str(self.pin_string[i]), fill="white", font=("Avenir-Black", 40)))
+            self.pin_numbers.append(self.canvas.create_text(_start_x, start_y, text=str(self.pin_string[i]), fill="white", font=("Avenir-Black", 40)))
         
-    def create_pin_circle(self, canvas, x, y):
+    def create_pin_circle(self, x, y):
         radius = 15
         x1 = x - radius
         y1 = y - radius
@@ -90,10 +90,10 @@ class PinEntryPage(tk.Frame):
         y2 = y + radius
         
         # Create the circle (oval) on the canvas
-        circle = canvas.create_oval(x1, y1, x2, y2, fill="#161616", outline="")
+        circle = self.canvas.create_oval(x1, y1, x2, y2, fill="#161616", outline="")
         return circle
         
-    def create_canvas_button(self, canvas, x1, y1, text, callback, rect_fill="#1A1A1A", text_fill="#BABABA"):
+    def create_canvas_button(self, x1, y1, text, callback, rect_fill="#1A1A1A", text_fill="#BABABA"):
         button_width = 120
         button_height = 50
         
@@ -101,10 +101,10 @@ class PinEntryPage(tk.Frame):
         y2 = y1 + button_height
         
         # Create a rectangle
-        rect = canvas.create_rectangle(x1, y1, x2, y2, fill=rect_fill, outline="")
+        rect = self.canvas.create_rectangle(x1, y1, x2, y2, fill=rect_fill, outline="")
         # Create text on top of the rectangle
-        text_id = canvas.create_text((x1 + x2) // 2, (y1 + y2) // 2, text=text, fill=text_fill, font=("Avenir-Black", 30))
+        text_id = self.canvas.create_text((x1 + x2) // 2, (y1 + y2) // 2, text=text, fill=text_fill, font=("Avenir-Black", 30))
         # Bind the click event to the rectangle and text
-        canvas.tag_bind(rect, "<Button-1>", callback)
-        canvas.tag_bind(text_id, "<Button-1>", callback)
+        self.canvas.tag_bind(rect, "<Button-1>", callback)
+        self.canvas.tag_bind(text_id, "<Button-1>", callback)
         return rect, text_id

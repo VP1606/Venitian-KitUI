@@ -7,6 +7,8 @@ class Baseboard(tk.Tk):
         super().__init__()
         self.title("Baseboard")
         self.geometry("1024x600")
+        self.attributes("-fullscreen", True)
+        self.attributes("-type", "splash")
         self.current_frame = None
         self.show_screen(WelcomeScreen)
 

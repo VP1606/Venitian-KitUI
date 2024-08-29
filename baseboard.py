@@ -16,6 +16,13 @@ class Baseboard(tk.Tk):
             self.current_frame.destroy()
         self.current_frame = new_frame
         self.current_frame.pack()
+        
+    def back_to_start(self):
+        new_frame = WelcomeScreen(self)
+        if self.current_frame is not None:
+            self.current_frame.destroy()
+        self.current_frame = new_frame
+        self.current_frame.pack()
 
 if __name__ == "__main__":
     app = Baseboard()

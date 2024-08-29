@@ -1,5 +1,6 @@
 import tkinter as tk
 from PIL import Image, ImageTk
+# from welcome_screen import WelcomeScreen
 
 class FinalPage(tk.Frame):
     def __init__(self, master):
@@ -22,3 +23,8 @@ class FinalPage(tk.Frame):
         self.canvas.create_text(1024 // 2, (265+11.5), text="Welcome In,", fill="#999999", font=("Avenir-Light", 17))
         self.canvas.create_text(1024 // 2, (293+20.5), text="Hector Fernandez", fill="white", font=("Avenir-Heavy", 30))
         self.canvas.create_text(1024 // 2, (364+11.5), text="Entered at 10:20am", fill="#999999", font=("Avenir-Roman", 17))
+        
+        self.after(30000, self.go_to_next_screen)
+
+    def go_to_next_screen(self):
+        self.master.back_to_start()

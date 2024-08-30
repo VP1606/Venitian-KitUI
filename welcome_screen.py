@@ -16,8 +16,6 @@ class WelcomeScreen(tk.Frame):
         super().__init__(master)
         self.master = master
         
-        self.reader = SimpleMFRC522()
-        
         self.canvas = tk.Canvas(self, width=1024, height=600, bg="black")
         self.canvas.pack()
         
@@ -51,11 +49,12 @@ class WelcomeScreen(tk.Frame):
         thread.start()
         
     async def general_scan(self):
+        reader = SimpleMFRC522()
         async with websockets.connect("ws://73.157.88.153:8000/wss") as websocket:
             try:
                 while True:
                     print("Hold a tag near the reader")
-                    id, text = self.reader.read()
+                    id, text = reader.read()
                     # id = "523"
                     print(f"ID: {id}")
                     data = {

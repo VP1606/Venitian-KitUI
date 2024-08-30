@@ -1,6 +1,7 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 from welcome_screen import WelcomeScreen
+# from pin_entry_page import PinEntryPage as WelcomeScreen
 
 class Baseboard(tk.Tk):
     def __init__(self):
@@ -11,11 +12,9 @@ class Baseboard(tk.Tk):
         self.attributes("-type", "splash")
         self.current_frame = None
         self.show_screen(WelcomeScreen)
-        
-        self.PERSON_NAME = "Schnozz Bob"
 
-    def show_screen(self, screen_class):
-        new_frame = screen_class(self)
+    def show_screen(self, screen_class, *args, **kwargs):
+        new_frame = screen_class(self, *args, **kwargs)
         if self.current_frame is not None:
             self.current_frame.destroy()
         self.current_frame = new_frame

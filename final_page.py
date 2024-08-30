@@ -27,7 +27,7 @@ class FinalPage(tk.Frame):
         self.canvas.create_text(1024 // 2, (293+20.5), text=name, fill="white", font=("Avenir-Heavy", 30))
         self.canvas.create_text(1024 // 2, (364+11.5), text="Entered at 10:20am", fill="#999999", font=("Avenir-Roman", 17))
         
-        self.after(30000, self.go_to_next_screen)
+        self.after(5000, self.go_to_next_screen)
 
     def go_to_next_screen(self):
         self.master.back_to_start()

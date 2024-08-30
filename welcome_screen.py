@@ -85,7 +85,7 @@ class WelcomeScreen(tk.Frame):
                     if len(results) == 1:
                         print("VALID PIN")
                         print(results)
-                        self.master.show_screen(FinalPage(name=results[0][1]))
+                        self.master.show_screen(FinalPage(master=self.master, name=results[0][1]))
                     else:
                         print("INVALID PIN")
                     

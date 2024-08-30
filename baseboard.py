@@ -11,6 +11,8 @@ class Baseboard(tk.Tk):
         self.attributes("-type", "splash")
         self.current_frame = None
         self.show_screen(WelcomeScreen)
+        
+        self.PERSON_NAME = "Schnozz Bob"
 
     def show_screen(self, screen_class):
         new_frame = screen_class(self)

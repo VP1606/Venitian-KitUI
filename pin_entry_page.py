@@ -1,6 +1,7 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 from final_page import FinalPage
+import mysql.connector
 
 class PinEntryPage(tk.Frame):
     def __init__(self, master):
@@ -42,6 +43,26 @@ class PinEntryPage(tk.Frame):
         self.update_pin_ui()
         
     def validate_pin(self):
+        if len(self.pin_string) != 6:
+            return
+        
+        mydb = mysql.connector.connect(
+            host="73.157.88.153",
+            user="piuser",
+            password="password",
+            database="venitian"
+        )
+        
+        mycursor = mydb.cursor()
+        sql = f"SELECT * FROM employees WHERE pin_code = {self.pin_string}"
+        mycursor.execute(sql)
+        
+        results = mycursor.fetchall()
+        if len(results) == 1:
+            print("VALID PIN")
+        else:
+            print("INVALID PIN")
+        
         self.master.show_screen(FinalPage)
     
     def remove_number_pin(self):

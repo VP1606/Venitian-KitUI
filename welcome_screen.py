@@ -52,7 +52,6 @@ class WelcomeScreen(tk.Frame):
         
     async def general_scan(self):
         reader = SimpleMFRC522()
-        reade
         async with websockets.connect("ws://73.157.88.153:8000/wss") as websocket:
             try:
                 while True:

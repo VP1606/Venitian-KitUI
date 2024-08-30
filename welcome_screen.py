@@ -1,6 +1,7 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 from pin_entry_page import PinEntryPage
+import os
 
 class WelcomeScreen(tk.Frame):
     def __init__(self, master):
@@ -11,7 +12,9 @@ class WelcomeScreen(tk.Frame):
         self.canvas.pack()
         
         # Load the background image
-        background_image = Image.open("backboard.png")
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        image_path = os.path.join(script_dir, "backboard.png")
+        background_image = Image.open(image_path)
         background_image = background_image.resize((1024, 600))
         self.background_photo = ImageTk.PhotoImage(background_image)
         

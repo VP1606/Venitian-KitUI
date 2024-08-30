@@ -52,6 +52,7 @@ class WelcomeScreen(tk.Frame):
         
     async def general_scan(self):
         reader = SimpleMFRC522()
+        reade
         async with websockets.connect("ws://73.157.88.153:8000/wss") as websocket:
             try:
                 while True:
@@ -85,12 +86,16 @@ class WelcomeScreen(tk.Frame):
                     if len(results) == 1:
                         print("VALID PIN")
                         print(results)
+                        mydb.close()
+                        GPIO.cleanup()
+                        reader.read_no_block()
                         self.master.show_screen(FinalPage, name=results[0][1])
+                        return
                     else:
                         print("INVALID PIN")
                     
             except KeyboardInterrupt:
-                # GPIO.cleanup()
+                GPIO.cleanup()
                 await websocket.close()
             except Exception as e:
                 print(f"Unexpected error: {e}")

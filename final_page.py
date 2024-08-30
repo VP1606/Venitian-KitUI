@@ -4,7 +4,7 @@ import os
 # from welcome_screen import WelcomeScreen
 
 class FinalPage(tk.Frame):
-    def __init__(self, master):
+    def __init__(self, master, name="Schnozz Bob"):
         super().__init__(master)
         self.master = master
         
@@ -24,7 +24,7 @@ class FinalPage(tk.Frame):
         font_settings = ("Avenir", 25)
         
         self.canvas.create_text(1024 // 2, (265+11.5), text="Welcome In,", fill="#999999", font=("Avenir-Light", 17))
-        self.canvas.create_text(1024 // 2, (293+20.5), text="Hector Fernandez", fill="white", font=("Avenir-Heavy", 30))
+        self.canvas.create_text(1024 // 2, (293+20.5), text=name, fill="white", font=("Avenir-Heavy", 30))
         self.canvas.create_text(1024 // 2, (364+11.5), text="Entered at 10:20am", fill="#999999", font=("Avenir-Roman", 17))
         
         self.after(30000, self.go_to_next_screen)

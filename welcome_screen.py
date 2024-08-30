@@ -7,6 +7,8 @@ import threading
 import json
 import time
 import asyncio
+import mysql.connector
+from final_page import FinalPage
 
 from mfrc522 import SimpleMFRC522
 import RPi.GPIO as GPIO
@@ -67,7 +69,26 @@ class WelcomeScreen(tk.Frame):
                         print("Connection lost, reconnecting...")
                         # ws = connect_websocket()
                         await websocket.send(json.dumps(data))
-                    time.sleep(0.5)
+                    
+                    mydb = mysql.connector.connect(
+                        host="73.157.88.153",
+                        user="piuser",
+                        password="password",
+                        database="venitian"
+                    )
+        
+                    mycursor = mydb.cursor()
+                    sql = f"SELECT * FROM employees WHERE identity_code = {id}"
+                    mycursor.execute(sql)
+                    
+                    results = mycursor.fetchall()
+                    if len(results) == 1:
+                        print("VALID PIN")
+                        print(results)
+                        self.master.show_screen(FinalPage(name=results[0][1]))
+                    else:
+                        print("INVALID PIN")
+                    
             except KeyboardInterrupt:
                 # GPIO.cleanup()
                 await websocket.close()

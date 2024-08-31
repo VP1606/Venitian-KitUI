@@ -3,6 +3,9 @@ from PIL import Image, ImageTk
 from final_page import FinalPage
 import mysql.connector
 import os
+import websockets
+import json
+import asyncio
 
 class PinEntryPage(tk.Frame):
     def __init__(self, master):
@@ -63,9 +66,24 @@ class PinEntryPage(tk.Frame):
         results = mycursor.fetchall()
         if len(results) == 1:
             print("VALID PIN")
+            asyncio.run(self.send_wss_confirmation(results[0][0]))
             self.master.show_screen(FinalPage, name=results[0][1])
         else:
             print("INVALID PIN")
+    
+    async def send_wss_confirmation(self, id):
+        async with websockets.connect("ws://73.157.88.153:8000/wss") as websocket:
+            print("HI WSS")
+            try:
+                data = {
+                        "identityCode": id,
+                        "cmd": "user_scanned"
+                }
+                await websocket.send(json.dumps(data))
+                print("DONE!!!")
+            except Exception as e:
+                print(f"Error sending confirmation: {e}")
+        return
     
     def remove_number_pin(self):
         if len(self.pin_string) > 0:

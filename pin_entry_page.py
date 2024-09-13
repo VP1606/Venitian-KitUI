@@ -6,6 +6,7 @@ import os
 import websockets
 import json
 import asyncio
+from PairCard import PairCardPage
 
 class PinEntryPage(tk.Frame):
     def __init__(self, master):
@@ -78,8 +79,12 @@ class PinEntryPage(tk.Frame):
             if len(results) == 1:
                 print("VALID SPECIAL PIN")
                 print(results)
-                # asyncio.run(self.send_wss_confirmation(results[0][0]))
-                # self.master.show_screen(FinalPage, name=results[0][1])
+                
+                if results[0][2] == "paircard_pin":
+                    print("Pair Card Mode...")
+                    self.master.show_screen(PairCardPage)
+                else:
+                    print(f"Uknown SPECIAL PIN Mode! :: {results[0][2]}")
                 
             else:
                 print("INVALID PIN")

@@ -12,6 +12,8 @@ class PairCardPage(tk.Frame):
         super().__init__(master)
         self.master = master
         
+        asyncio.run(self.send_wss_confirmation())
+        
         self.canvas = tk.Canvas(self, width=1024, height=600, bg="black")
         self.canvas.pack()
         
@@ -24,3 +26,16 @@ class PairCardPage(tk.Frame):
         
         # Create a background image on the canvas
         self.canvas.create_image(0, 0, image=self.background_photo, anchor="nw")
+        
+    async def send_wss_confirmation(self):
+        async with websockets.connect("ws://73.157.88.153:8000/wss") as websocket:
+            print("HI WSS PC")
+            try:
+                data = {
+                        "cmd": "paircard_code_entered"
+                }
+                await websocket.send(json.dumps(data))
+                print("DONE!!!")
+            except Exception as e:
+                print(f"Error sending confirmation: {e}")
+        return

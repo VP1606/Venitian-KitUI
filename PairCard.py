@@ -6,6 +6,7 @@ import os
 import websockets
 import json
 import asyncio
+import random
 
 class PairCardPage(tk.Frame):
     def __init__(self, master):
@@ -26,6 +27,29 @@ class PairCardPage(tk.Frame):
         
         # Create a background image on the canvas
         self.canvas.create_image(0, 0, image=self.background_photo, anchor="nw")
+        
+        tk.Label(self, text='Place New Card', fg='#FFFFFF', bg='black', font=("Avenir-Heavy", 30)).place(x=400, y=173)
+        tk.Label(self, text='Place the new card on the RFID sensor to scan.', fg='#B2B2B2', bg='black', font=("Avenir", 18)).place(x=323, y=233)
+        tk.Label(self, text='You can assign the card to a user using the mobile app.', fg='#B2B2B2', bg='black', font=("Avenir", 18)).place(x=290, y=258)
+        
+        tk.Label(self, text='CARD ID', fg='#FFFFFF', bg='black', font=("Avenir-Light", 18)).place(x=476, y=354)
+        # self.card_number_shower = tk.Label(self, text='PENDING', fg='#FFFFFF', bg='black', font=("Avenir-Heavy", 30)).place(x=442, y=385)
+        self.card_number_shower = self.canvas.create_text(1024/2, 405, text='PENDING', fill="#FFFFFF", font=("Avenir-Heavy", 30))
+        
+        self.simulate_card_numbers = [427984682468, 497802935349, 769039985930, 894395552477]
+        
+        self.simulate_box = self.canvas.create_rectangle(362, 492, 662, 532, fill="#1924FF", outline="")
+        self.simulate_title = self.canvas.create_text((362 + 662) // 2, (492 + 532) // 2, text="Simulate", fill="#FFFFFF", font=("Avenir-Heavy", 20))
+        
+        self.canvas.tag_bind(self.simulate_box, "<Button-1>", self.simulate_card)
+        self.canvas.tag_bind(self.simulate_title, "<Button-1>", self.simulate_card)
+        
+        self.selected_card = None
+        
+    def simulate_card(self, event):
+        card_number = random.choice(self.simulate_card_numbers)
+        self.selected_card = card_number
+        self.canvas.itemconfig(self.card_number_shower, text=str(self.selected_card))
         
     async def send_wss_confirmation(self):
         async with websockets.connect("ws://73.157.88.153:8000/wss") as websocket:

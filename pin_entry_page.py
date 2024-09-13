@@ -69,7 +69,20 @@ class PinEntryPage(tk.Frame):
             asyncio.run(self.send_wss_confirmation(results[0][0]))
             self.master.show_screen(FinalPage, name=results[0][1])
         else:
-            print("INVALID PIN")
+            # print("INVALID PIN")
+            ## Check if it's a special pin!
+            sql = f"SELECT * FROM special_pins WHERE pin = {self.pin_string}"
+            mycursor.execute(sql)
+            results = mycursor.fetchall()
+            
+            if len(results) == 1:
+                print("VALID SPECIAL PIN")
+                print(results)
+                # asyncio.run(self.send_wss_confirmation(results[0][0]))
+                # self.master.show_screen(FinalPage, name=results[0][1])
+                
+            else:
+                print("INVALID PIN")
     
     async def send_wss_confirmation(self, id):
         async with websockets.connect("ws://73.157.88.153:8000/wss") as websocket:

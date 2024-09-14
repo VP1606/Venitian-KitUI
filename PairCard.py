@@ -38,18 +38,28 @@ class PairCardPage(tk.Frame):
         
         self.simulate_card_numbers = [427984682468, 497802935349, 769039985930, 894395552477]
         
-        self.simulate_box = self.canvas.create_rectangle(362, 492, 662, 532, fill="#1924FF", outline="")
-        self.simulate_title = self.canvas.create_text((362 + 662) // 2, (492 + 532) // 2, text="Simulate", fill="#FFFFFF", font=("Avenir-Heavy", 20))
+        self.simulate_box = self.canvas.create_rectangle(362, 442, 662, 482, fill="#1924FF", outline="")
+        self.simulate_title = self.canvas.create_text((362 + 662) // 2, (442 + 482) // 2, text="Simulate", fill="#FFFFFF", font=("Avenir-Heavy", 20))
+        
+        self.exit_box = self.canvas.create_rectangle(362, 492, 662, 532, fill="#FF1934", outline="")
+        self.exit_title = self.canvas.create_text((362 + 662) // 2, (492 + 532) // 2, text="Exit", fill="#FFFFFF", font=("Avenir-Heavy", 20))
         
         self.canvas.tag_bind(self.simulate_box, "<Button-1>", self.simulate_card)
         self.canvas.tag_bind(self.simulate_title, "<Button-1>", self.simulate_card)
         
+        self.canvas.tag_bind(self.exit_box, "<Button-1>", self.exit_pc)
+        self.canvas.tag_bind(self.exit_title, "<Button-1>", self.exit_pc)
+        
         self.selected_card = None
+        
+    def exit_pc(self, event):
+        self.master.back_to_start()
         
     def simulate_card(self, event):
         card_number = random.choice(self.simulate_card_numbers)
         self.selected_card = card_number
         self.canvas.itemconfig(self.card_number_shower, text=str(self.selected_card))
+        asyncio.run(self.send_wss_cardscan())
         
     async def send_wss_confirmation(self):
         async with websockets.connect("ws://73.157.88.153:8000/wss") as websocket:
@@ -57,6 +67,20 @@ class PairCardPage(tk.Frame):
             try:
                 data = {
                         "cmd": "paircard_code_entered"
+                }
+                await websocket.send(json.dumps(data))
+                print("DONE!!!")
+            except Exception as e:
+                print(f"Error sending confirmation: {e}")
+        return
+    
+    async def send_wss_cardscan(self):
+        async with websockets.connect("ws://73.157.88.153:8000/wss") as websocket:
+            print("HI WSS PC CS")
+            try:
+                data = {
+                        "cmd": "paircard_idcode_submit",
+                        "idcode": str(self.selected_card)
                 }
                 await websocket.send(json.dumps(data))
                 print("DONE!!!")

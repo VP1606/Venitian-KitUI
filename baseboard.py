@@ -2,7 +2,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 from welcome_screen import WelcomeScreen
 # from pin_entry_page import PinEntryPage as WelcomeScreen
-
+from PairCard import PairCardPage
 class Baseboard(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -12,6 +12,7 @@ class Baseboard(tk.Tk):
         self.attributes("-type", "splash")
         self.current_frame = None
         self.show_screen(WelcomeScreen)
+        # self.show_screen(PairCardPage)
 
     def show_screen(self, screen_class, *args, **kwargs):
         new_frame = screen_class(self, *args, **kwargs)

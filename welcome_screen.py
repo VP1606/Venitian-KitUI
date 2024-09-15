@@ -10,8 +10,8 @@ import asyncio
 import mysql.connector
 from final_page import FinalPage
 
-# from mfrc522 import SimpleMFRC522
-# import RPi.GPIO as GPIO
+from mfrc522 import SimpleMFRC522
+import RPi.GPIO as GPIO
 
 class WelcomeScreen(tk.Frame):
     def __init__(self, master):
@@ -42,64 +42,64 @@ class WelcomeScreen(tk.Frame):
         self.canvas.tag_bind(enter_pin_box, "<Button-1>", self.enter_pin_btn)
         self.canvas.tag_bind(enter_pin_title, "<Button-1>", self.enter_pin_btn)
         
-        # self.start_background_scanning()
+        self.start_background_scanning()
         
-    # def start_background_scanning(self):
-    #     # Create and start a thread to run the general_scan main function
-    #     thread = threading.Thread(target=asyncio.run, args=(self.general_scan(),))
-    #     thread.daemon = True  # This ensures the thread will close when the main program exits
-    #     thread.start()
+    def start_background_scanning(self):
+        # Create and start a thread to run the general_scan main function
+        thread = threading.Thread(target=asyncio.run, args=(self.general_scan(),))
+        thread.daemon = True  # This ensures the thread will close when the main program exits
+        thread.start()
         
-    # async def general_scan(self):
-    #     reader = SimpleMFRC522()
-    #     async with websockets.connect("ws://73.157.88.153:8000/wss") as websocket:
-    #         try:
-    #             while True:
-    #                 print("Hold a tag near the reader")
-    #                 id, text = reader.read()
-    #                 # id = "523"
-    #                 print(f"ID: {id}")
-    #                 data = {
-    #                     "identityCode": id,
-    #                     "cmd": "user_scanned"
-    #                 }
-    #                 try:
-    #                     await websocket.send(json.dumps(data))
-    #                 except (websocket.WebSocketConnectionClosedException, BrokenPipeError):
-    #                     print("Connection lost, reconnecting...")
-    #                     # ws = connect_websocket()
-    #                     await websocket.send(json.dumps(data))
+    async def general_scan(self):
+        reader = SimpleMFRC522()
+        async with websockets.connect("ws://73.157.88.153:8000/wss") as websocket:
+            try:
+                while True:
+                    print("Hold a tag near the reader")
+                    id, text = reader.read()
+                    # id = "523"
+                    print(f"ID: {id}")
+                    data = {
+                        "identityCode": id,
+                        "cmd": "user_scanned"
+                    }
+                    try:
+                        await websocket.send(json.dumps(data))
+                    except (websocket.WebSocketConnectionClosedException, BrokenPipeError):
+                        print("Connection lost, reconnecting...")
+                        # ws = connect_websocket()
+                        await websocket.send(json.dumps(data))
                     
-    #                 mydb = mysql.connector.connect(
-    #                     host="73.157.88.153",
-    #                     user="piuser",
-    #                     password="password",
-    #                     database="venitian"
-    #                 )
+                    mydb = mysql.connector.connect(
+                        host="73.157.88.153",
+                        user="piuser",
+                        password="password",
+                        database="venitian"
+                    )
         
-    #                 mycursor = mydb.cursor()
-    #                 sql = f"SELECT * FROM employees WHERE identity_code = {id}"
-    #                 mycursor.execute(sql)
+                    mycursor = mydb.cursor()
+                    sql = f"SELECT * FROM employees WHERE identity_code = {id}"
+                    mycursor.execute(sql)
                     
-    #                 results = mycursor.fetchall()
-    #                 if len(results) == 1:
-    #                     print("VALID PIN")
-    #                     print(results)
-    #                     mydb.close()
-    #                     GPIO.cleanup()
-    #                     reader.read_no_block()
-    #                     self.master.show_screen(FinalPage, name=results[0][1])
-    #                     return
-    #                 else:
-    #                     print("INVALID PIN")
+                    results = mycursor.fetchall()
+                    if len(results) == 1:
+                        print("VALID PIN")
+                        print(results)
+                        mydb.close()
+                        GPIO.cleanup()
+                        reader.read_no_block()
+                        self.master.show_screen(FinalPage, name=results[0][1])
+                        return
+                    else:
+                        print("INVALID PIN")
                     
-    #         except KeyboardInterrupt:
-    #             GPIO.cleanup()
-    #             await websocket.close()
-    #         except Exception as e:
-    #             print(f"Unexpected error: {e}")
-    #             # GPIO.cleanup()
-    #             await websocket.close()
+            except KeyboardInterrupt:
+                GPIO.cleanup()
+                await websocket.close()
+            except Exception as e:
+                print(f"Unexpected error: {e}")
+                # GPIO.cleanup()
+                await websocket.close()
     
     def enter_pin_btn(self, event):
         self.master.show_screen(PinEntryPage)

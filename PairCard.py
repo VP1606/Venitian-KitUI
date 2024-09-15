@@ -8,6 +8,10 @@ import json
 import asyncio
 import random
 
+import threading
+from mfrc522 import SimpleMFRC522
+import RPi.GPIO as GPIO
+
 class PairCardPage(tk.Frame):
     def __init__(self, master):
         super().__init__(master)
@@ -51,6 +55,26 @@ class PairCardPage(tk.Frame):
         self.canvas.tag_bind(self.exit_title, "<Button-1>", self.exit_pc)
         
         self.selected_card = None
+        
+    def start_background_scanning(self):
+        # Create and start a thread to run the general_scan main function
+        thread = threading.Thread(target=asyncio.run, args=(self.general_scan(),))
+        thread.daemon = True  # This ensures the thread will close when the main program exits
+        thread.start()
+        
+    async def general_scan(self):
+        reader = SimpleMFRC522()
+        try:
+            while True:
+                print("Hold a tag near the reader")
+                id, text = reader.read()
+                # id = "523"
+                print(f"ID: {id}")
+                self.selected_card = id
+                self.canvas.itemconfig(self.card_number_shower, text=str(self.selected_card))
+                asyncio.run(self.send_wss_cardscan())
+        except KeyboardInterrupt:
+            GPIO.cleanup()
         
     def exit_pc(self, event):
         self.master.back_to_start()

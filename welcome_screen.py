@@ -42,10 +42,12 @@ class WelcomeScreen(tk.Frame):
         self.canvas.tag_bind(enter_pin_box, "<Button-1>", self.enter_pin_btn)
         self.canvas.tag_bind(enter_pin_title, "<Button-1>", self.enter_pin_btn)
         
+        self.stop_event = asyncio.Event()
         self.start_background_scanning()
         
     def start_background_scanning(self):
         # Create and start a thread to run the general_scan main function
+        self.stop_event.clear()
         thread = threading.Thread(target=asyncio.run, args=(self.general_scan(),))
         thread.daemon = True  # This ensures the thread will close when the main program exits
         thread.start()
@@ -54,7 +56,7 @@ class WelcomeScreen(tk.Frame):
         reader = SimpleMFRC522()
         async with websockets.connect("ws://73.157.88.153:8000/wss") as websocket:
             try:
-                while True:
+                while not self.stop_event.is_set():
                     print("Hold a tag near the reader")
                     id, text = reader.read()
                     # id = "523"
@@ -104,4 +106,5 @@ class WelcomeScreen(tk.Frame):
         print("Bye Bye")
     
     def enter_pin_btn(self, event):
+        self.stop_event.set()
         self.master.show_screen(PinEntryPage)

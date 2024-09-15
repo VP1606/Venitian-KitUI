@@ -45,19 +45,24 @@ class Baseboard(tk.Tk):
         self.current_frame.pack()
 
     async def updater(self):
-        async with websockets.connect("ws://73.157.88.153:8000/wss") as websocket:
-            print("HI WSS")
+        while True:
             try:
-                commit_hash = os.popen('git rev-parse HEAD').read().strip()
-                data = {
-                        "cmd": "insert_hash", 
-                        "piHash": commit_hash
-                }
-                await websocket.send(json.dumps(data))
-                print("DONE!!!")
-                await self.receive_messages(websocket)
-            except Exception as e:
-                print(f"Error sending confirmation: {e}")
+                async with websockets.connect("ws://73.157.88.153:8000/wss") as websocket:
+                    print("HI WSS")
+                    try:
+                        commit_hash = os.popen('git rev-parse HEAD').read().strip()
+                        data = {
+                                "cmd": "insert_hash", 
+                                "piHash": commit_hash
+                        }
+                        await websocket.send(json.dumps(data))
+                        print("DONE!!!")
+                        await self.receive_messages(websocket)
+                    except Exception as e:
+                        print(f"Error sending confirmation: {e}")
+            except (websockets.ConnectionClosed, ConnectionRefusedError) as e:
+                print(f"WebSocket connection failed: {e}. Retrying in 3 seconds...")
+                await asyncio.sleep(3)
         
         print("BYE WSS -- RETURNING")
         return

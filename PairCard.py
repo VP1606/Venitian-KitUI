@@ -58,18 +58,18 @@ class PairCardPage(tk.Frame):
         
     def start_background_scanning(self):
         # Create and start a thread to run the general_scan main function
-        thread = threading.Thread(target=asyncio.run, args=(self.general_scan(),))
+        thread = threading.Thread(target=asyncio.run, args=(self.present_card_scan(),))
         thread.daemon = True  # This ensures the thread will close when the main program exits
         thread.start()
         
-    async def general_scan(self):
+    async def present_card_scan(self):
         reader = SimpleMFRC522()
         try:
             while True:
-                print("Hold a tag near the reader")
+                print("Hold a tag near the reader FROM PC")
                 id, text = reader.read()
                 # id = "523"
-                print(f"ID: {id}")
+                print(f"PC --- ID: {id}")
                 self.selected_card = id
                 self.canvas.itemconfig(self.card_number_shower, text=str(self.selected_card))
                 asyncio.run(self.send_wss_cardscan())

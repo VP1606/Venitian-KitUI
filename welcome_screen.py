@@ -42,13 +42,14 @@ class WelcomeScreen(tk.Frame):
         self.canvas.tag_bind(enter_pin_box, "<Button-1>", self.enter_pin_btn)
         self.canvas.tag_bind(enter_pin_title, "<Button-1>", self.enter_pin_btn)
         
-        # self.start_background_scanning()
+        self.thread = None
+        self.start_background_scanning()
         
     def start_background_scanning(self):
         # Create and start a thread to run the general_scan main function
-        thread = threading.Thread(target=asyncio.run, args=(self.general_scan(),))
-        thread.daemon = True  # This ensures the thread will close when the main program exits
-        thread.start()
+        self.thread = threading.Thread(target=asyncio.run, args=(self.general_scan(),))
+        self.thread.daemon = True  # This ensures the thread will close when the main program exits
+        self.thread.start()
         
     async def general_scan(self):
         reader = SimpleMFRC522()
@@ -100,6 +101,9 @@ class WelcomeScreen(tk.Frame):
                 print(f"Unexpected error: {e}")
                 # GPIO.cleanup()
                 await websocket.close()
+                
+        print("Bye Bye")
     
     def enter_pin_btn(self, event):
+        self.thread.join()
         self.master.show_screen(PinEntryPage)

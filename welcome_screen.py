@@ -42,7 +42,6 @@ class WelcomeScreen(tk.Frame):
         self.canvas.tag_bind(enter_pin_box, "<Button-1>", self.enter_pin_btn)
         self.canvas.tag_bind(enter_pin_title, "<Button-1>", self.enter_pin_btn)
         
-        self.stop_event = asyncio.Event()
         self.start_background_scanning()
         
     def start_background_scanning(self):
@@ -55,7 +54,7 @@ class WelcomeScreen(tk.Frame):
         reader = SimpleMFRC522()
         async with websockets.connect("ws://73.157.88.153:8000/wss") as websocket:
             try:
-                while not self.stop_event.is_set():
+                while True:
                     print("Hold a tag near the reader")
                     id, text = reader.read()
                     # id = "523"
@@ -103,5 +102,4 @@ class WelcomeScreen(tk.Frame):
                 await websocket.close()
     
     def enter_pin_btn(self, event):
-        self.stop_event.set()
         self.master.show_screen(PinEntryPage)

@@ -8,6 +8,7 @@ import os
 import json
 import asyncio
 import threading
+import os
 
 class Baseboard(tk.Tk):
     def __init__(self):
@@ -65,8 +66,18 @@ class Baseboard(tk.Tk):
         try:
             async for message in websocket:
                 print(f"Received message: {message}")
-                # Handle the received message here
-                # For example, you can update the UI or process the data
+                try:
+                    payload = json.loads(message)
+                    cmd = payload["cmd"]
+                    
+                    if cmd == "kit_update_now_trigger_rec":
+                        print("TRIGGER UPDATE")
+                        os.system("sh ./update-kit.sh")
+                        print("Back out of SH.")
+                
+                except Exception as e:
+                    print(f"Error processing message: {e}")
+                
         except websockets.ConnectionClosed:
             print("WebSocket connection closed")
 

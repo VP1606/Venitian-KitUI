@@ -72,7 +72,7 @@ class PairCardPage(tk.Frame):
                 print(f"PC --- ID: {id}")
                 self.selected_card = id
                 self.canvas.itemconfig(self.card_number_shower, text=str(self.selected_card))
-                asyncio.run(self.send_wss_cardscan())
+                await self.send_wss_cardscan()
         except KeyboardInterrupt:
             GPIO.cleanup()
         

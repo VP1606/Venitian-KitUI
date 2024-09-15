@@ -55,6 +55,7 @@ class PairCardPage(tk.Frame):
         self.canvas.tag_bind(self.exit_title, "<Button-1>", self.exit_pc)
         
         self.selected_card = None
+        self.start_background_scanning()
         
     def start_background_scanning(self):
         # Create and start a thread to run the general_scan main function

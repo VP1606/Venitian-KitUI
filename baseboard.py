@@ -21,6 +21,7 @@ class Baseboard(tk.Tk):
         
         self.start_updater_watcher()
         
+        self.accessible_current_frame = None
         self.show_screen(WelcomeScreen)
         # self.show_screen(PairCardPage)
         
@@ -31,6 +32,7 @@ class Baseboard(tk.Tk):
         thread.start()
 
     def show_screen(self, screen_class, *args, **kwargs):
+        self.accessible_current_frame = screen_class
         new_frame = screen_class(self, *args, **kwargs)
         if self.current_frame is not None:
             self.current_frame.destroy()
@@ -38,6 +40,7 @@ class Baseboard(tk.Tk):
         self.current_frame.pack()
         
     def back_to_start(self):
+        self.accessible_current_frame = WelcomeScreen
         new_frame = WelcomeScreen(self)
         if self.current_frame is not None:
             self.current_frame.destroy()

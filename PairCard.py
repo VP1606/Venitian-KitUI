@@ -55,25 +55,24 @@ class PairCardPage(tk.Frame):
         self.canvas.tag_bind(self.exit_title, "<Button-1>", self.exit_pc)
         
         self.selected_card = None
-        self.start_background_scanning()
         
     def start_background_scanning(self):
         # Create and start a thread to run the general_scan main function
-        thread = threading.Thread(target=asyncio.run, args=(self.present_card_scan(),))
+        thread = threading.Thread(target=asyncio.run, args=(self.general_scan(),))
         thread.daemon = True  # This ensures the thread will close when the main program exits
         thread.start()
         
-    async def present_card_scan(self):
+    async def general_scan(self):
         reader = SimpleMFRC522()
         try:
             while True:
-                print("Hold a tag near the reader FROM PC")
+                print("Hold a tag near the reader")
                 id, text = reader.read()
                 # id = "523"
-                print(f"PC --- ID: {id}")
+                print(f"ID: {id}")
                 self.selected_card = id
                 self.canvas.itemconfig(self.card_number_shower, text=str(self.selected_card))
-                await self.send_wss_cardscan()
+                asyncio.run(self.send_wss_cardscan())
         except KeyboardInterrupt:
             GPIO.cleanup()
         

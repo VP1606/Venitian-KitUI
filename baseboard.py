@@ -10,13 +10,6 @@ import asyncio
 import threading
 import os
 
-from final_page import FinalPage
-
-from mfrc522 import SimpleMFRC522
-import RPi.GPIO as GPIO
-
-import mysql.connector
-
 class Baseboard(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -25,8 +18,6 @@ class Baseboard(tk.Tk):
         self.attributes("-fullscreen", True)
         self.attributes("-type", "splash")
         self.current_frame = None
-        
-        self.current_screen = None
         
         self.start_updater_watcher()
         
@@ -40,7 +31,6 @@ class Baseboard(tk.Tk):
         thread.start()
 
     def show_screen(self, screen_class, *args, **kwargs):
-        self.current_screen = screen_class
         new_frame = screen_class(self, *args, **kwargs)
         if self.current_frame is not None:
             self.current_frame.destroy()

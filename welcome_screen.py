@@ -118,6 +118,7 @@ class WelcomeScreen(tk.Frame):
                     elif self.master.accessible_current_frame == PairCardPage:
                         print("PIN CARD PAGE")
                         self.master.pc_card_id = id
+                        self.current_frame.start_background_scanning()
                     
                     else:
                         #ignore

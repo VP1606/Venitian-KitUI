@@ -55,7 +55,7 @@ class PairCardPage(tk.Frame):
         self.canvas.tag_bind(self.exit_title, "<Button-1>", self.exit_pc)
         
         self.selected_card = None
-        self.start_background_scanning()
+        # self.start_background_scanning()
         
     def update_card_id_master(self, value):
         print("UPDATING CARD ID MASTER")
@@ -73,7 +73,7 @@ class PairCardPage(tk.Frame):
         reader = SimpleMFRC522()
         try:
             while True:
-                print("Hold a tag near the reader")
+                print("Hold a tag near the reader FROM PAIRCARD")
                 id, text = reader.read()
                 # id = "523"
                 print(f"ID: {id}")

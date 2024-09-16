@@ -74,7 +74,7 @@ class PairCardPage(tk.Frame):
         try:
             while True:
                 
-                if self.master.current_frame != PairCardPage:
+                if self.master.accessible_current_frame != PairCardPage:
                     break
                 
                 print("Hold a tag near the reader FROM PAIRCARD")

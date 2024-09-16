@@ -69,7 +69,7 @@ class WelcomeScreen(tk.Frame):
             try:
                 while True:
                     
-                    if self.master.current_frame != WelcomeScreen:
+                    if self.master.accessible_current_frame != WelcomeScreen:
                         break
                     
                     if self.master.accessible_current_frame == WelcomeScreen:

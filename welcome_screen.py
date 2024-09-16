@@ -68,11 +68,13 @@ class WelcomeScreen(tk.Frame):
         async with websockets.connect("ws://73.157.88.153:8000/wss") as websocket:
             try:
                 while True:
-                    print("Hold a tag near the reader")
-                    id, text = reader.read()
-                    # id = "523"
-                    print(f"ID: {id}")
+                    
                     if self.master.accessible_current_frame == WelcomeScreen:
+                        print("Hold a tag near the reader")
+                        id, text = reader.read()
+                        # id = "523"
+                        print(f"ID: {id}")
+                        
                         print("WELCOME SCREEN")
                         data = {
                             "identityCode": id,

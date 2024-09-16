@@ -9,8 +9,8 @@ import time
 import asyncio
 import mysql.connector
 from final_page import FinalPage
-# from PairCard import PairCardPage
-from pin_entry_page import PinEntryPage as PairCardPage
+from PairCard import PairCardPage
+#from pin_entry_page import PinEntryPage as PairCardPage
 
 from mfrc522 import SimpleMFRC522
 import RPi.GPIO as GPIO
@@ -110,11 +110,13 @@ class WelcomeScreen(tk.Frame):
                     
                     elif self.master.accessible_current_frame == PairCardPage:
                         print("PIN CARD PAGE")
-                        self.master.pc_card_id = id
+                        # self.master.pc_card_id = id
                     
                     else:
                         #ignore
                         pass
+                    
+                    await asyncio.sleep(1)
                     
             except KeyboardInterrupt:
                 GPIO.cleanup()

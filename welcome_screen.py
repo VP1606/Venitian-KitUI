@@ -64,12 +64,13 @@ class WelcomeScreen(tk.Frame):
     #             pass
         
     async def general_scan(self):
-        reader = SimpleMFRC522()
+        
         async with websockets.connect("ws://73.157.88.153:8000/wss") as websocket:
             try:
                 while True:
                     
                     if self.master.accessible_current_frame == WelcomeScreen:
+                        reader = SimpleMFRC522()
                         print("Hold a tag near the reader")
                         id, text = reader.read()
                         # id = "523"
@@ -109,10 +110,14 @@ class WelcomeScreen(tk.Frame):
                             return
                         else:
                             print("INVALID PIN")
+                            
+                        GPIO.cleanup()
+                        reader.read_no_block()
+                        reader = None
                     
                     elif self.master.accessible_current_frame == PairCardPage:
                         print("PIN CARD PAGE")
-                        # self.master.pc_card_id = id
+                        self.master.pc_card_id = id
                     
                     else:
                         #ignore

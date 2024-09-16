@@ -69,6 +69,9 @@ class WelcomeScreen(tk.Frame):
             try:
                 while True:
                     
+                    if self.master.current_frame != WelcomeScreen:
+                        break
+                    
                     if self.master.accessible_current_frame == WelcomeScreen:
                         reader = SimpleMFRC522()
                         print("Hold a tag near the reader")
@@ -118,7 +121,7 @@ class WelcomeScreen(tk.Frame):
                     elif self.master.accessible_current_frame == PairCardPage:
                         print("PIN CARD PAGE")
                         self.master.pc_card_id = id
-                        self.current_frame.start_background_scanning()
+                        # self.current_frame.start_background_scanning()
                     
                     else:
                         #ignore

@@ -21,9 +21,21 @@ class Baseboard(tk.Tk):
         
         self.start_updater_watcher()
         
+        self._pc_card_id = None
+        
         self.accessible_current_frame = None
         self.show_screen(WelcomeScreen)
         # self.show_screen(PairCardPage)
+        
+    @property
+    def pc_card_id(self):
+        return self._pc_card_id
+
+    @pc_card_id.setter
+    def pc_card_id(self, value):
+        self.pc_card_id = value
+        if self.current_frame and hasattr(self.current_frame, "update_card_id_master"):
+            self.current_frame.update_card_id_master(value)
         
     def start_updater_watcher(self):
         # Create and start a thread to run the general_scan main function

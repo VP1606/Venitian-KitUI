@@ -56,6 +56,12 @@ class PairCardPage(tk.Frame):
         
         self.selected_card = None
         
+    def update_card_id_master(self, value):
+        print("UPDATING CARD ID MASTER")
+        self.selected_card = value.__name__
+        self.canvas.itemconfig(self.card_number_shower, text=str(self.selected_card))
+        asyncio.run(self.send_wss_cardscan())
+        
     def start_background_scanning(self):
         # Create and start a thread to run the general_scan main function
         thread = threading.Thread(target=asyncio.run, args=(self.general_scan(),))

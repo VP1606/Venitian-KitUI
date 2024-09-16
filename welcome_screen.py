@@ -12,8 +12,8 @@ from final_page import FinalPage
 # from PairCard import PairCardPage
 from pin_entry_page import PinEntryPage as PairCardPage
 
-# from mfrc522 import SimpleMFRC522
-# import RPi.GPIO as GPIO
+from mfrc522 import SimpleMFRC522
+import RPi.GPIO as GPIO
 
 class WelcomeScreen(tk.Frame):
     def __init__(self, master):
@@ -52,69 +52,77 @@ class WelcomeScreen(tk.Frame):
         thread.daemon = True  # This ensures the thread will close when the main program exits
         thread.start()
         
-    async def general_scan(self):
-        count = 0
-        while True:
-            if self.master.accessible_current_frame == WelcomeScreen:
-                print(f"XYZ WELCOME {count}")
-            elif self.master.accessible_current_frame == PairCardPage:
-                print(f"XYZ PINCARD {count}")
-            else:
-                pass
-                
-            count += 1
-            time.sleep(2)
-        
     # async def general_scan(self):
-    #     reader = SimpleMFRC522()
-    #     async with websockets.connect("ws://73.157.88.153:8000/wss") as websocket:
-    #         try:
-    #             while True:
-    #                 print("Hold a tag near the reader")
-    #                 id, text = reader.read()
-    #                 # id = "523"
-    #                 print(f"ID: {id}")
-    #                 data = {
-    #                     "identityCode": id,
-    #                     "cmd": "user_scanned"
-    #                 }
-    #                 try:
-    #                     await websocket.send(json.dumps(data))
-    #                 except (websocket.WebSocketConnectionClosedException, BrokenPipeError):
-    #                     print("Connection lost, reconnecting...")
-    #                     # ws = connect_websocket()
-    #                     await websocket.send(json.dumps(data))
-                    
-    #                 mydb = mysql.connector.connect(
-    #                     host="73.157.88.153",
-    #                     user="piuser",
-    #                     password="password",
-    #                     database="venitian"
-    #                 )
+    #     while True:
+    #         if self.master.accessible_current_frame == WelcomeScreen:
+    #             print(f"XYZ WELCOME {count}")
+    #             self.master.test_variable = f"WELCOMESCR {count}"
+    #         elif self.master.accessible_current_frame == PairCardPage:
+    #             print(f"XYZ PINCARD {count}")
+    #             self.master.test_variable = f"PINCARD {count}"
+    #         else:
+    #             pass
         
-    #                 mycursor = mydb.cursor()
-    #                 sql = f"SELECT * FROM employees WHERE identity_code = {id}"
-    #                 mycursor.execute(sql)
+    async def general_scan(self):
+        reader = SimpleMFRC522()
+        async with websockets.connect("ws://73.157.88.153:8000/wss") as websocket:
+            try:
+                while True:
+                    print("Hold a tag near the reader")
+                    id, text = reader.read()
+                    # id = "523"
+                    print(f"ID: {id}")
+                    if self.master.accessible_current_frame == WelcomeScreen:
+                        print("WELCOME SCREEN")
+                        data = {
+                            "identityCode": id,
+                            "cmd": "user_scanned"
+                        }
+                        try:
+                            await websocket.send(json.dumps(data))
+                        except (websocket.WebSocketConnectionClosedException, BrokenPipeError):
+                            print("Connection lost, reconnecting...")
+                            # ws = connect_websocket()
+                            await websocket.send(json.dumps(data))
+                        
+                        mydb = mysql.connector.connect(
+                            host="73.157.88.153",
+                            user="piuser",
+                            password="password",
+                            database="venitian"
+                        )
+            
+                        mycursor = mydb.cursor()
+                        sql = f"SELECT * FROM employees WHERE identity_code = {id}"
+                        mycursor.execute(sql)
+                        
+                        results = mycursor.fetchall()
+                        if len(results) == 1:
+                            print("VALID PIN")
+                            print(results)
+                            mydb.close()
+                            GPIO.cleanup()
+                            reader.read_no_block()
+                            self.master.show_screen(FinalPage, name=results[0][1])
+                            return
+                        else:
+                            print("INVALID PIN")
                     
-    #                 results = mycursor.fetchall()
-    #                 if len(results) == 1:
-    #                     print("VALID PIN")
-    #                     print(results)
-    #                     mydb.close()
-    #                     GPIO.cleanup()
-    #                     reader.read_no_block()
-    #                     self.master.show_screen(FinalPage, name=results[0][1])
-    #                     return
-    #                 else:
-    #                     print("INVALID PIN")
+                    elif self.master.accessible_current_frame == PairCardPage:
+                        print("PIN CARD PAGE")
+                        self.master.pc_card_id = id
                     
-    #         except KeyboardInterrupt:
-    #             GPIO.cleanup()
-    #             await websocket.close()
-    #         except Exception as e:
-    #             print(f"Unexpected error: {e}")
-    #             # GPIO.cleanup()
-    #             await websocket.close()
+                    else:
+                        #ignore
+                        pass
+                    
+            except KeyboardInterrupt:
+                GPIO.cleanup()
+                await websocket.close()
+            except Exception as e:
+                print(f"Unexpected error: {e}")
+                # GPIO.cleanup()
+                await websocket.close()
     
     def enter_pin_btn(self, event):
         self.master.show_screen(PinEntryPage)

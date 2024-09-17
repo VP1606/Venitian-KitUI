@@ -44,7 +44,7 @@ class WelcomeScreen(tk.Frame):
         self.canvas.tag_bind(enter_pin_box, "<Button-1>", self.enter_pin_btn)
         self.canvas.tag_bind(enter_pin_title, "<Button-1>", self.enter_pin_btn)
         
-        self.start_background_scanning()
+        #self.start_background_scanning()
         
     def start_background_scanning(self):
         # Create and start a thread to run the general_scan main function

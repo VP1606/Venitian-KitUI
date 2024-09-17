@@ -25,6 +25,7 @@ class Baseboard(tk.Tk):
         
         self.accessible_current_frame = None
         self.show_screen(WelcomeScreen)
+        self.current_frame.start_background_scanning()
         # self.show_screen(PairCardPage)
         
     @property

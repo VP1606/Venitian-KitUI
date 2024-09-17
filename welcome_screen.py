@@ -110,10 +110,6 @@ class WelcomeScreen(tk.Frame):
                             return
                         else:
                             print("INVALID PIN")
-                            
-                        GPIO.cleanup()
-                        reader.read_no_block()
-                        reader = None
                     
                     elif self.master.accessible_current_frame == PairCardPage:
                         print("PIN CARD PAGE")
@@ -128,6 +124,8 @@ class WelcomeScreen(tk.Frame):
                         #ignore
                         pass
                     
+                    GPIO.cleanup()
+                    reader.read_no_block()
                     await asyncio.sleep(1)
                     
             except KeyboardInterrupt:

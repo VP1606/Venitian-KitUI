@@ -118,7 +118,7 @@ class WelcomeScreen(tk.Frame):
                         # id = "523"
                         print(f"ID: {id}")
                         # self.master.pc_card_id = id
-                        self.master.current_frame.update_card_id(id=id)
+                        await self.master.current_frame.update_card_id(id=id)
                     
                     else:
                         #ignore

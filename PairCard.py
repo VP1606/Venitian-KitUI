@@ -69,6 +69,11 @@ class PairCardPage(tk.Frame):
         thread.daemon = True  # This ensures the thread will close when the main program exits
         thread.start()
         
+    def update_card_id(self, id):
+        self.selected_card = id
+        self.canvas.itemconfig(self.card_number_shower, text=str(self.selected_card))
+        asyncio.run(self.send_wss_cardscan())
+        
     async def general_scan(self):
         reader = SimpleMFRC522()
         try:

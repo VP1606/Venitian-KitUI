@@ -2,7 +2,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 from welcome_screen import WelcomeScreen
 # from pin_entry_page import PinEntryPage as WelcomeScreen
-
+#empty commit angellou Sutharsan
 class Baseboard(tk.Tk):
     def __init__(self):
         super().__init__()

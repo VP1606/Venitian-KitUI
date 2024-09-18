@@ -2,7 +2,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 import os
 # from welcome_screen import WelcomeScreen
-
+#empty commits
 class FinalPage(tk.Frame):
     def __init__(self, master, name="Schnozz Bob"):
         super().__init__(master)
